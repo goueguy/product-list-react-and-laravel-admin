@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rules\Password;
 class UserController extends Controller
 {
     function register(Request $request){
@@ -32,5 +31,45 @@ class UserController extends Controller
             "data"=>$user,
             "code"=>200
         ]);
+    }
+
+    public function login(Request $request){
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password'=>'required|string|min:8'
+        ]);
+        if($validator->fails()){
+            return response([
+                "message"=>$validator->errors(),
+                "code"=>404
+            ]);
+        }
+        try {
+            $user = User::where('email',$request->email)->first();
+            if(!$user || !Hash::check($request->password, $user->password)){
+                return response(
+                    [
+                        "message"=>"Adresse Email ou Mot de passe incorrect",
+                        "code"=>404
+                    ]
+                );
+            }
+            else{
+                return response(
+                    [
+                        "message"=>"Utilisateur Introuvable",
+                        "data"=>$user,
+                        "code"=>200
+                    ]
+                );
+            }
+        } catch (\Exception $e) {
+            return response(
+                [
+                    "message"=>$e->getMessage(),
+                    "code"=>400
+                ]
+            );
+        }
     }
 }
