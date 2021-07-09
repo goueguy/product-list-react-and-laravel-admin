@@ -15,10 +15,10 @@ class UserController extends Controller
             'password'=>'required|string|min:8'
         ]);
         if($validator->fails()){
-            return response([
+            return response()->json([
                 "message"=>"User is not registered",
                 "error"=>$validator->errors(),
-                "code"=>404
+                "code"=>400
             ]);
         }
         $user = new User;
@@ -26,7 +26,7 @@ class UserController extends Controller
         $user->email = $request->input('email');
         $user->password = Hash::make($request->input('password'));
         $user->save();
-        return response([
+        return response()->json([
             "message"=>"User Registered",
             "data"=>$user,
             "code"=>200
@@ -39,32 +39,32 @@ class UserController extends Controller
             'password'=>'required|string|min:8'
         ]);
         if($validator->fails()){
-            return response([
+            return response()->json([
                 "message"=>$validator->errors(),
-                "code"=>404
+                "code"=>400
             ]);
         }
         try {
             $user = User::where('email',$request->email)->first();
             if(!$user || !Hash::check($request->password, $user->password)){
-                return response(
+                return response()->json(
                     [
                         "message"=>"Adresse Email ou Mot de passe incorrect",
-                        "code"=>404
+                        "code"=>400
                     ]
                 );
             }
             else{
-                return response(
+                return response()->json(
                     [
-                        "message"=>"Utilisateur Introuvable",
+                        "message"=>"Utilisateur Trouvé",
                         "data"=>$user,
                         "code"=>200
                     ]
                 );
             }
         } catch (\Exception $e) {
-            return response(
+            return response()->json(
                 [
                     "message"=>$e->getMessage(),
                     "code"=>400

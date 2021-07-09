@@ -21,13 +21,13 @@ return [
 
     'allowed_origins' => ['*'],
 
-    'allowed_origins_patterns' => ['Google'],
+    'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['X-Custom-Header', 'Upgrade-Insecure-Requests','*'],
+    'allowed_headers' => ['*'],
 
-    'exposed_headers' => false,
+    'exposed_headers' => [],
 
-    'max_age' => false,
+    'max_age' => 0,
 
     'supports_credentials' => false,
 
